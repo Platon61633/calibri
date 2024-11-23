@@ -1,5 +1,11 @@
 import sys
 
+import psycopg2
+ 
+conn = psycopg2.connect(dbname="testDB", user="postgres", password="password", host="192.168.1.107", port="5432")
+conn.autocommit = True
+cursor = conn.cursor()
+
 # from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtWidgets import QApplication, QLineEdit, QMainWindow
 from PyQt6.QtGui import QIcon, QAction
@@ -32,7 +38,11 @@ class Reg(QMainWindow):
 
         self.sign = self.ui.pushButton_2
 
-        self.sign.clicked.connect(self.do_registration)
+        self.reg = self.ui.pushButton
+
+        self.reg.clicked.connect(self.do_registration)
+
+        self.sign.clicked.connect(self.do_login)
 
         self.username_input.setPlaceholderText("Логин")
         self.password_input.setPlaceholderText("Пароль")
@@ -58,7 +68,11 @@ class Reg(QMainWindow):
         self.name_input.textChanged.connect(self.do_name_label)
         self.surname_input.textChanged.connect(self.do_surname_label)
     def do_registration(self):
-        print("Регистрация")
+        cursor.execute("""INSERT INTO users (login,password,name,last) values(%s,%s,%s,%s)""",(self.username_input.text(), self.password_input.text(), self.name_input.text(), self.surname_input.text()))
+        # print(self.name_input.text(), self.username_input.text(), self.surname_input.text(), self.password_input.text() )
+
+    def do_login(self):
+        # print("Регистрация")
         QtCore.QCoreApplication.quit()
         status = QtCore.QProcess.startDetached(sys.executable, sys.argv)
         # self.ui.gridLayout_2.addWidget(Reg())

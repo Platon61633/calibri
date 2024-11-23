@@ -1,5 +1,11 @@
 import sys
 
+import psycopg2
+ 
+conn = psycopg2.connect(dbname="testDB", user="postgres", password="password", host="192.168.1.107", port="5432")
+conn.autocommit = True
+cursor = conn.cursor()
+
 # from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtWidgets import QApplication, QLineEdit, QMainWindow
 from PyQt6.QtGui import QIcon, QAction
@@ -28,7 +34,9 @@ class Login(QMainWindow):
         self.username_input = self.ui.lineEdit
         self.password_input = self.ui.lineEdit_2
 
+        self.login = self.ui.pushButton
 
+        self.login.clicked.connect(self.do_login)
 
         self.username_input.setPlaceholderText("Логин")
         self.password_input.setPlaceholderText("Пароль")
@@ -45,6 +53,13 @@ class Login(QMainWindow):
 
         self.username_input.textChanged.connect(self.do_username_label)
         self.password_input.textChanged.connect(self.do_password_label)
+
+    def do_login(self):
+        # print(self.username_input.text(), self.password_input.text())
+        # q=cursor.execute("SELECT * FROM users WHERE login="+self.username_input.text())
+        # print(q.fetchone())
+        print(cursor.execute("SELECT * FROM users;").fetchone(), 3)
+        
 
     def do_username_label(self, text):
         if text:
