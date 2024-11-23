@@ -3,8 +3,10 @@ import sys
 # from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtWidgets import QApplication, QLineEdit, QMainWindow
 from PyQt6.QtGui import QIcon, QAction
+from PyQt6 import QtCore
 
 from Registration.style_ui import Ui_MainWindow
+# from useLogin import Login
 
 class Reg(QMainWindow):
     def __init__(self):
@@ -28,6 +30,9 @@ class Reg(QMainWindow):
         self.username_input = self.ui.lineEdit_3
         self.password_input = self.ui.lineEdit_4
 
+        self.sign = self.ui.pushButton_2
+
+        self.sign.clicked.connect(self.do_registration)
 
         self.username_input.setPlaceholderText("Логин")
         self.password_input.setPlaceholderText("Пароль")
@@ -52,7 +57,11 @@ class Reg(QMainWindow):
         self.password_input.textChanged.connect(self.do_password_label)
         self.name_input.textChanged.connect(self.do_name_label)
         self.surname_input.textChanged.connect(self.do_surname_label)
-
+    def do_registration(self):
+        print("Регистрация")
+        QtCore.QCoreApplication.quit()
+        status = QtCore.QProcess.startDetached(sys.executable, sys.argv)
+        # self.ui.gridLayout_2.addWidget(Reg())
     def do_username_label(self, text):
         if text:
             self.username_label.setText("Логин")
