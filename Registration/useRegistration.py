@@ -1,8 +1,11 @@
-from ok.main import MainScreen;
-
 import sys
 
+import pymysql
+import pymysql.cursors
 
+connection = pymysql.connect(host="192.168.0.173", port=3308, user="root", password="root", db="test", cursorclass=pymysql.cursors.DictCursor)
+
+from ok.main import MainScreen;
 # from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtWidgets import QApplication, QLineEdit, QMainWindow
 from PyQt6.QtGui import QIcon, QAction
@@ -65,14 +68,29 @@ class Reg(QMainWindow):
         self.name_input.textChanged.connect(self.do_name_label)
         self.surname_input.textChanged.connect(self.do_surname_label)
     def do_registration(self):
-        #cursor.execute("""INSERT INTO users (login,password,name,last) values(%s,%s,%s,%s)""",(self.username_input.text(), self.password_input.text(), self.name_input.text(), self.surname_input.text()))
+        if self.username_input.text()=='' or self.password_input.text()=='' or self.name_input.text()=='' or self.surname_input.text()=='':
+            self.name_label.setText("Заполните все поля.")
+            self.name_label.setStyleSheet("color: red;")
+            self.username_label.setText("")
+            self.password_label.setText('')
+            self.surname_label.setText('')
+        else:
+            with connection.cursor() as cursor:
+                cursor.execute("INSERT INTO users (login,pass,name,last) values(%s,%s,%s,%s)""",(self.username_input.text(), self.password_input.text(), self.name_input.text(), self.surname_input.text()))
+                connection.commit()
+            for i in range(self.ui.gridLayout_3.count()): 
+                while self.ui.gridLayout_3.count():
+                    child = self.ui.gridLayout_3.takeAt(0)
+                    if child.widget():
+                      child.widget().deleteLater()
+            self.ui.gridLayout_3.addWidget(MainScreen())
+            # if cursor.fetchone() == None:
+            #     self.username_label.setText('Неправильный логин или пароль.')
+            #     self.password_label.setText('')
+            #     self.username_label.setStyleSheet("color: red;")
+        # cursor.execute("""INSERT INTO users (login,password,name,last) values(%s,%s,%s,%s)""",(self.username_input.text(), self.password_input.text(), self.name_input.text(), self.surname_input.text()))
         # print(self.name_input.text(), self.username_input.text(), self.surname_input.text(), self.password_input.text() )
-        for i in range(self.ui.gridLayout_3.count()): 
-            while self.ui.gridLayout_3.count():
-                child = self.ui.gridLayout_3.takeAt(0)
-                if child.widget():
-                  child.widget().deleteLater()
-        self.ui.gridLayout_3.addWidget(MainScreen())
+
     def do_login(self):
         # print("Регистрация")
         QtCore.QCoreApplication.quit()

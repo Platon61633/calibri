@@ -1,5 +1,10 @@
 import sys
 
+import pymysql
+import pymysql.cursors
+
+connection = pymysql.connect(host="192.168.0.173", port=3308, user="root", password="root", db="test", cursorclass=pymysql.cursors.DictCursor)
+
 # from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtWidgets import QApplication, QLineEdit, QMainWindow
 from PyQt6.QtGui import QIcon, QAction
@@ -9,6 +14,7 @@ from style_ui import Ui_MainWindowL
 from Registration.useRegistration import Reg
 
 from ok.main import MainScreen
+
 
 class Login(QMainWindow):
     def __init__(self):
@@ -51,16 +57,29 @@ class Login(QMainWindow):
         self.password_input.textChanged.connect(self.do_password_label)
 
     def do_login(self):
+        global data
         # print(self.username_input.text(), self.password_input.text())
-        # q=cursor.execute("SELECT * FROM users WHERE login="+self.username_input.text())
-        # print(q.fetchone())
-        #print(cursor.execute("SELECT * FROM users;").fetchone(), 3)
-        for i in range(self.ui.gridLayout_2.count()): 
-            while self.ui.gridLayout_2.count():
-                child = self.ui.gridLayout_2.takeAt(0)
-                if child.widget():
-                  child.widget().deleteLater()
-        self.ui.gridLayout_2.addWidget(MainScreen())
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT * FROM users WHERE login=%s AND pass=%s", (self.username_input.text(), self.password_input.text()))
+            if cursor.fetchone() == None:
+                self.username_label.setText('Неправильный логин или пароль.')
+                self.password_label.setText('')
+                self.username_label.setStyleSheet("color: red;")
+            else:
+                # q=cursor.execute("SELECT * FROM users WHERE login="+self.username_input.text())
+                # print(q.fetchone())
+                #print(cursor.execute("SELECT * FROM users;").fetchone(), 3)
+                f = open('login.txt', 'w')
+                print(self.username_input.text())
+                f.write(self.username_input.text())
+                f.close() 
+                for i in range(self.ui.gridLayout_2.count()): 
+                    while self.ui.gridLayout_2.count():
+                        child = self.ui.gridLayout_2.takeAt(0)
+                        if child.widget():
+                          child.widget().deleteLater()
+                self.ui.gridLayout_2.addWidget(MainScreen())
+                
         
 
     def do_username_label(self, text):

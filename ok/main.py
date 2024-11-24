@@ -1,12 +1,12 @@
-# import psycopg2
-# import time
-# import datetime
- 
-# conn = psycopg2.connect(dbname="testDB", user="postgres", password="password", host="localhost", port="5432")
-# conn.autocommit = True
-# cursor = conn.cursor()
+import time
+import datetime
 
-import sys
+import pymysql
+import pymysql.cursors
+
+connection = pymysql.connect(host="192.168.0.173", port=3308, user="root", password="root", db="test", cursorclass=pymysql.cursors.DictCursor)
+
+# from useLogin import data
 
 from PyQt6.QtWidgets import QApplication, QMainWindow
 from PyQt6.uic import loadUi
@@ -25,13 +25,22 @@ class MainScreen(QMainWindow):
         self.hrValue.setVisible(False)
         self.label_5.setVisible(False)
         self.piValue.setVisible(False)
-        # self.n = 0
+        self.n = 0
 
         self.searchButton.clicked.connect(self.start_search)
         self.startCalcButton.clicked.connect(self.start_calc)
         self.stopCalcButton.clicked.connect(self.stop_calc)
         self.foundedListWidget.itemClicked.connect(self.connect_to_device)
         self.__founded_sensors=list[CallibriInfo]
+
+        # print(data)
+
+        with open("login.txt", "r") as f:
+            log = f.read()
+
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT * FROM users WHERE login=%s", (log))
+            self.id = cursor.fetchone()['id']
 
     def start_search(self):
         self.foundedListWidget.clear()
@@ -76,12 +85,14 @@ class MainScreen(QMainWindow):
                     self.piValue.setText("вычисляется")
                 else:
                     self.piValue.setText("%.2f" % pi)
-                    # ts = time.time()
-                    # self.n+=1
-                    # if self.n == 50:
-                    #     timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
-                    #     cursor.execute("""INSERT INTO test (puls,stress,time) values(%s,%s,%s)""",("%.2f" % hr,"%.2f" % pi,timestamp))
-                    #     self.n = 0
+                    ts = time.time()
+                    self.n+=1
+                    if self.n == 50:
+                        timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+                        with connection.cursor() as cursor:
+                            cursor.execute("INSERT INTO data (userId,puls,stress,time) values(%s,%s,%s,%s)""",(self.id,"%.2f" % hr,"%.2f" % pi,timestamp))
+                            connection.commit()
+                        self.n = 0
 
 
         def has_rr_picks(address: str, has_picks: bool):
