@@ -11,13 +11,12 @@ import sys
 from PyQt6.QtWidgets import QApplication, QMainWindow
 from PyQt6.uic import loadUi
 
-from callibri_controller import callibri_controller, ConnectionState, CallibriInfo
-
+from ok.callibri_controller import callibri_controller, ConnectionState, CallibriInfo
 
 class MainScreen(QMainWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        loadUi("ui/MainWindow.ui", self)
+        loadUi("ok/ui/MainWindow.ui", self)
         self.startCalcButton.setVisible(False)
         self.stopCalcButton.setVisible(False)
         self.label_3.setVisible(False)
@@ -102,9 +101,11 @@ class MainScreen(QMainWindow):
             print(err)
         callibri_controller.stop_calculations(callibri_controller.connected_devices[0])
 
+'''
 app = QApplication(sys.argv)
 window = MainScreen()
 window.show()
 app.exec()
 callibri_controller.stop_all()
 sys.exit()
+'''

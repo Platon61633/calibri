@@ -1,10 +1,7 @@
+from ok.main import MainScreen;
+
 import sys
 
-import psycopg2
- 
-conn = psycopg2.connect(dbname="testDB", user="postgres", password="password", host="192.168.1.107", port="5432")
-conn.autocommit = True
-cursor = conn.cursor()
 
 # from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtWidgets import QApplication, QLineEdit, QMainWindow
@@ -68,9 +65,14 @@ class Reg(QMainWindow):
         self.name_input.textChanged.connect(self.do_name_label)
         self.surname_input.textChanged.connect(self.do_surname_label)
     def do_registration(self):
-        cursor.execute("""INSERT INTO users (login,password,name,last) values(%s,%s,%s,%s)""",(self.username_input.text(), self.password_input.text(), self.name_input.text(), self.surname_input.text()))
+        #cursor.execute("""INSERT INTO users (login,password,name,last) values(%s,%s,%s,%s)""",(self.username_input.text(), self.password_input.text(), self.name_input.text(), self.surname_input.text()))
         # print(self.name_input.text(), self.username_input.text(), self.surname_input.text(), self.password_input.text() )
-
+        for i in range(self.ui.gridLayout_3.count()): 
+            while self.ui.gridLayout_3.count():
+                child = self.ui.gridLayout_3.takeAt(0)
+                if child.widget():
+                  child.widget().deleteLater()
+        self.ui.gridLayout_3.addWidget(MainScreen())
     def do_login(self):
         # print("Регистрация")
         QtCore.QCoreApplication.quit()

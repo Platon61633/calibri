@@ -1,11 +1,5 @@
 import sys
 
-import psycopg2
- 
-conn = psycopg2.connect(dbname="testDB", user="postgres", password="password", host="192.168.1.107", port="5432")
-conn.autocommit = True
-cursor = conn.cursor()
-
 # from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtWidgets import QApplication, QLineEdit, QMainWindow
 from PyQt6.QtGui import QIcon, QAction
@@ -13,6 +7,8 @@ from PyQt6.QtGui import QIcon, QAction
 from style_ui import Ui_MainWindowL
 
 from Registration.useRegistration import Reg
+
+from ok.main import MainScreen
 
 class Login(QMainWindow):
     def __init__(self):
@@ -58,7 +54,13 @@ class Login(QMainWindow):
         # print(self.username_input.text(), self.password_input.text())
         # q=cursor.execute("SELECT * FROM users WHERE login="+self.username_input.text())
         # print(q.fetchone())
-        print(cursor.execute("SELECT * FROM users;").fetchone(), 3)
+        #print(cursor.execute("SELECT * FROM users;").fetchone(), 3)
+        for i in range(self.ui.gridLayout_2.count()): 
+            while self.ui.gridLayout_2.count():
+                child = self.ui.gridLayout_2.takeAt(0)
+                if child.widget():
+                  child.widget().deleteLater()
+        self.ui.gridLayout_2.addWidget(MainScreen())
         
 
     def do_username_label(self, text):
