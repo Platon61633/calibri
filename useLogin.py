@@ -72,7 +72,7 @@ class Login(QMainWindow):
                 f = open('login.txt', 'w')
                 print(self.username_input.text())
                 f.write(self.username_input.text())
-                f.close() 
+                f.close()
                 for i in range(self.ui.gridLayout_2.count()): 
                     while self.ui.gridLayout_2.count():
                         child = self.ui.gridLayout_2.takeAt(0)

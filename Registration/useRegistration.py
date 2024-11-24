@@ -75,6 +75,10 @@ class Reg(QMainWindow):
             self.password_label.setText('')
             self.surname_label.setText('')
         else:
+            f = open('./login.txt', 'w')
+            print(self.username_input.text())
+            f.write(self.username_input.text())
+            f.close()
             with connection.cursor() as cursor:
                 cursor.execute("INSERT INTO users (login,pass,name,last) values(%s,%s,%s,%s)""",(self.username_input.text(), self.password_input.text(), self.name_input.text(), self.surname_input.text()))
                 connection.commit()

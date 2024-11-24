@@ -73,6 +73,13 @@ class MainScreen(QMainWindow):
                 self.label_5.setVisible(True)
                 self.piValue.setVisible(True)
 
+                self.label_3.setStyleSheet("color: black;")
+                self.label_4.setStyleSheet("color: black;")
+                self.label_5.setStyleSheet("color: black;")
+                self.hasRR.setStyleSheet("color: blue;")
+                self.hrValue.setStyleSheet("color: blue;")
+                self.piValue.setStyleSheet("color: blue;")
+
         callibri_controller.connectionStateChanged.connect(on_device_connection_state_changed)
         callibri_controller.connect_to(info=item_info, need_reconnect=True)
 
